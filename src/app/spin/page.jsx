@@ -72,7 +72,7 @@ export default function SpinPage() {
 
           {spinResult?.success && (
             <div className="mt-10 animate-bounce text-white text-center">
-              <p className="text-3xl font-bold">SELAMAT!</p>
+              <p className="text-3xl font-bold">Selamat Anda Mendapatkan!</p>
               <p className="text-5xl font-extrabold">{spinResult.prize}</p>
             </div>
           )}
