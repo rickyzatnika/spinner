@@ -15,7 +15,7 @@ export default function SpinPage() {
 
   // Ambil prize dari DB
   useEffect(() => {
-    fetch("/api/prizes")
+    fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/prizes`)
       .then((res) => res.json())
       .then((data) => {
         setPrizes(data.prizes);
@@ -23,7 +23,7 @@ export default function SpinPage() {
   }, []);
 
   const validateCode = async () => {
-    const res = await fetch("/api/validate-code", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/validate-code`, {
       method: "POST",
       body: JSON.stringify({ code }),
     });
@@ -33,7 +33,7 @@ export default function SpinPage() {
   const doSpin = async () => {
     setIsSpinning(true);
 
-    const res = await fetch("/api/spin", {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spin`, {
       method: "POST",
       body: JSON.stringify({ code }),
     });
@@ -97,7 +97,7 @@ export default function SpinPage() {
         {valid?.valid && !isSpinning && !spinResult && (
           <button
             onClick={async () => {
-              const res = await fetch("/api/spin", {
+              const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spin`, {
                 method: "POST",
                 body: JSON.stringify({ code }),
               });
