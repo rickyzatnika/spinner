@@ -275,13 +275,13 @@ export default function Wheel({ prizes = [], onFinish, spinTrigger, targetIndex 
           borderTop: "35px solid red",
         }}
       />
-      <div className="relative w-[400px] h-[400px] mx-auto ">
+      <div className="relative w-[400px] h-[400px]  ">
 
         <canvas
           ref={canvasRef}
           width={400}
           height={400}
-          className="rounded-full shadow-xl border-8 border-pink-700 shadow-pink-900 will-change-transform"
+          className="rounded-full w-[300px] h-[300px] md:w-[400px] md:h-[400px] mx-auto shadow-xl border-8 border-pink-700 shadow-pink-900 will-change-transform"
         ></canvas>
       </div>
 
