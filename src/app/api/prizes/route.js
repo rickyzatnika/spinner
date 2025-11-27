@@ -14,7 +14,7 @@ export async function GET() {
     });
   } catch (err) {
     console.error("GET ERROR:", err);
-    return NextResponse.json(
+    return Response.json(
       { success: false, message: "Server error GET prizes" },
       { status: 500 }
     );

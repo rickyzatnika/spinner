@@ -3,6 +3,27 @@ import { generateCode } from "@/lib/generateCode";
 import Registration from "@/models/Registration";
 
 
+
+
+export async function GET() {
+  try {
+    await connectDB();
+
+    const users = await Registration.find();
+
+    return Response.json({users});
+  } catch (err) {
+    console.error("GET ERROR:", err);
+    return Response.json(
+      { success: false, message: "Server error GET prizes" },
+      { status: 500 }
+    );
+  }
+}
+
+
+
+
 export async function POST(req) {
   try {
     await connectDB();
@@ -37,3 +58,5 @@ export async function POST(req) {
     return Response.json({ success: false, error: error.message });
   }
 }
+
+
