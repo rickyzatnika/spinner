@@ -1,4 +1,12 @@
-export async function triggerConfetti(duration = 2000) {
+/**
+ * Trigger confetti bursts in the browser.
+ * @param {Object|number} options - Either duration (ms) or options object.
+ * Options: { duration, origin: {x, y}, particleCount }
+ */
+export async function triggerConfetti(options = {}) {
+  // allow calling with a number for backward-compat
+  const opts = typeof options === 'number' ? { duration: options } : options;
+  const { duration = 2000, origin = null, particleCount = 8 } = opts;
   // dynamic import so this module doesn't break SSR
   const confettiModule = await import('canvas-confetti');
   const confetti = confettiModule.default || confettiModule;
@@ -9,11 +17,11 @@ export async function triggerConfetti(duration = 2000) {
   (function frame() {
     // basic burst configuration, random spread + origin
     confetti({
-      particleCount: 7,
+      particleCount,
       startVelocity: 40,
       spread: 120,
       ticks: 350,
-      origin: { x: Math.random(), y: Math.random() * 0.5 },
+      origin: origin || { x: Math.random(), y: Math.random() * 0.5 },
       colors: ['#ff0a54', '#ffdd57', '#ff7ab6', '#7bed9f', '#3fe0ff', '#ffd166', '#a55eea']
     });
 

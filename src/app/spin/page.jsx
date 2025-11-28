@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import Wheel from "../components/Wheel";
-import { triggerConfetti } from "../../lib/confetti";
 import Image from "next/image";
 
 export default function SpinPage() {
@@ -10,6 +9,7 @@ export default function SpinPage() {
   const [valid, setValid] = useState(null);
   const [spinResult, setSpinResult] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [celebrate, setCelebrate] = useState(false);
   const [prizes, setPrizes] = useState([]);
   const [spinIndex, setSpinIndex] = useState(null);
   const [spinTrigger, setSpinTrigger] = useState(false);
@@ -51,7 +51,14 @@ export default function SpinPage() {
 
     <div className="w-full flex flex-col  mt-3 items-center gap-4">
       <div>
-        <Image src="/goodluck.png" alt="Logo" width={450} height={450} priority={true} className="object-cover" />
+        <Image
+          src="/goodluck.png"
+          alt="Good luck"
+          width={450}
+          height={450}
+          priority={true}
+          className={`object-cover transition-transform duration-300 ease-out ${isSpinning ? 'animate-wobble' : celebrate ? 'animate-pop' : 'animate-float'}`}
+        />
       </div>
       <div className="w-full ">
         <Wheel
@@ -62,9 +69,10 @@ export default function SpinPage() {
 
           onFinish={async (prize, index) => {
             setSpinResult({ success: true, prize: prize.name, index });
-
-            // Play confetti celebration (non-blocking)
-            try { triggerConfetti(2000); } catch (e) { /* ignore */ }
+            // stop spinner state and trigger a short header pop animation
+            setIsSpinning(false);
+            setCelebrate(true);
+            setTimeout(() => setCelebrate(false), 900);
 
             // Kirim hasil ke backend
             await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spin`, {
@@ -118,6 +126,7 @@ export default function SpinPage() {
                 setSpinIndex(randomIndex);
 
                 // 2️⃣ Trigger animasi wheel
+                setIsSpinning(true);
                 setSpinTrigger(Date.now());
               }}
               className="w-full mt-4 bg-yellow-400 text-black p-3 rounded-lg font-bold"

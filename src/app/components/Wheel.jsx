@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { triggerConfetti } from "../../lib/confetti";
 
 export default function Wheel({ prizes = [], onFinish, spinTrigger, targetIndex }) {
   const canvasRef = useRef(null);
@@ -126,7 +127,44 @@ export default function Wheel({ prizes = [], onFinish, spinTrigger, targetIndex 
           coloredPrizes.length - (finalAngle / TAU) * coloredPrizes.length
         ) % coloredPrizes.length;
 
-        finishSound && finishSound.play().catch(() => {});
+        // Play finish sound and then trigger confetti, using the sound's duration
+        if (finishSound) {
+          finishSound.play().catch(() => {}).finally(() => {
+            try {
+              const canvas = canvasRef.current;
+              // use the audio duration (seconds) if available, otherwise fallback
+              const soundDurationMs = Number.isFinite(finishSound.duration) && finishSound.duration > 0 ? finishSound.duration * 1000 : null;
+              const confettiDuration = soundDurationMs ? Math.max(1800, Math.round(soundDurationMs)) : 2200;
+
+              if (canvas) {
+                const rect = canvas.getBoundingClientRect();
+                const x = (rect.left + rect.width / 2) / window.innerWidth;
+                const y = (rect.top + rect.height / 2) / window.innerHeight;
+                triggerConfetti({ duration: confettiDuration, origin: { x, y }, particleCount: 12 });
+              } else {
+                // fallback
+                triggerConfetti(confettiDuration);
+              }
+            } catch (e) {
+              // ignore errors during confetti (do not break UI)
+            }
+          });
+        } else {
+          // if no sound, trigger a reasonable default
+          try {
+            const canvas = canvasRef.current;
+            if (canvas) {
+              const rect = canvas.getBoundingClientRect();
+              const x = (rect.left + rect.width / 2) / window.innerWidth;
+              const y = (rect.top + rect.height / 2) / window.innerHeight;
+              triggerConfetti({ duration: 2200, origin: { x, y }, particleCount: 12 });
+            } else {
+              triggerConfetti(2200);
+            }
+          } catch (e) {
+            // ignore
+          }
+        }
 
         // Panggil onFinish & simpan ke DB
         if (onFinish && coloredPrizes[idx]) {
@@ -169,16 +207,29 @@ export default function Wheel({ prizes = [], onFinish, spinTrigger, targetIndex 
 
   return (
     <div className="flex flex-col items-center justify-center relative">
-      {/* Pointer */}
-      <div
-        className="absolute top-[-7.5px] z-20 w-0 h-0"
-        style={{
-          borderLeft: "13px solid transparent",
-          borderRight: "13px solid transparent",
-          borderTop: "45px solid #7F00FF",
-         
-        }}
-      />
+      {/* Centered pointer / hub */}
+      <div className="absolute inset-0 flex items-center justify-center z-30 pointer-events-none">
+        <div className="relative flex items-center justify-center">
+          {/* Outer ring / badge */}
+          <div className="w-16 h-16 md:w-20 md:h-20 rounded-full backdrop-blur-sm bg-white/30 border-[6px] border-[#fff] shadow-xl flex items-center justify-center">
+            {/* Triangle indicator (pointing up) */}
+            <div
+              style={{
+                width: 0,
+                height: 0,
+                borderLeft: '8px solid transparent',
+                borderRight: '8px solid transparent',
+                borderBottom: '28px solid #7F00FF',
+                position: 'absolute',
+                top: -14,
+              }}
+            />
+
+            {/* Small center dot */}
+            <div className="w-3 h-3 rounded-full bg-[#000] z-40" />
+          </div>
+        </div>
+      </div>
       <div className="relative  w-[340px] h-[340px] md:w-[420px] md:h-[420px] rounded-full " style={{ boxShadow: "0 0 0 12px #7F00FF, 0 10px 30px rgba(0,0,0,0.6)" }}>
         <canvas
           ref={canvasRef}
