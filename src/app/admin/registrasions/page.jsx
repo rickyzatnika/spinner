@@ -37,8 +37,11 @@ const UserRegistration = () => {
 
       <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
         <table class="w-full text-sm text-left rtl:text-right text-body">
-          <thead class="text-sm bg-pink-200 text-body bg-neutral-secondary-medium border-b border-default-medium">
+          <thead class="text-sm bg-purple-200 text-body bg-neutral-secondary-medium border-b border-default-medium">
             <tr>
+              <th scope="col" class="px-6 py-3 font-bold">
+                No
+              </th>
               <th scope="col" class="px-6 py-3 font-bold">
                 Nama Peserta
               </th>
@@ -65,6 +68,9 @@ const UserRegistration = () => {
           <tbody>
             {data?.users?.map((user) => (
               <tr key={user._id} class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+                <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                  {data.users.indexOf(user) + 1}
+                </th>
                 <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
                   {user.name}
                 </th>

@@ -1,129 +1,3 @@
-// "use client";
-
-// import { useEffect, useRef } from "react";
-
-// export default function Wheel({ prizes = [], onFinish, spinTrigger }) {
-//   const canvasRef = useRef(null);
-
-//   // REAL angle & velocity
-//   const ang = useRef(0);
-//   const angVel = useRef(0);
-
-//   const friction = 0.985;
-//   const PI = Math.PI;
-//   const TAU = 2 * PI;
-
-//   // Generate random HEX color
-//   const randomColor = () => {
-//     const h = Math.floor(Math.random() * 360);
-//     return `hsl(${h}, 85%, 55%)`;
-//   };
-
-//   // Assign random colors once
-//   const coloredPrizes = prizes.map((p) => ({
-//     ...p,
-//     color: p.color || randomColor(),
-//   }));
-
-//   const drawSector = (ctx, sector, i, arc, rad) => {
-//     const angle = arc * i;
-//     ctx.save();
-
-//     // Sector fill
-//     ctx.beginPath();
-//     ctx.fillStyle = sector.color;
-//     ctx.moveTo(rad, rad);
-//     ctx.arc(rad, rad, rad, angle, angle + arc);
-//     ctx.lineTo(rad, rad);
-//     ctx.fill();
-
-//     // Text
-//     ctx.translate(rad, rad);
-//     ctx.rotate(angle + arc / 2);
-//     ctx.textAlign = "right";
-//     ctx.fillStyle = "#000";
-//     ctx.font = "bold 18px sans-serif";
-//     ctx.fillText(sector.name || sector.label, rad - 10, 10);
-
-//     ctx.restore();
-//   };
-
-//   const getIndex = (ang, tot) =>
-//     Math.floor(tot - (ang / TAU) * tot) % tot;
-
-//   // MAIN ANIMATION LOOP
-//   useEffect(() => {
-//     if (coloredPrizes.length === 0) return;
-
-//     const ctx = canvasRef.current.getContext("2d");
-//     const canvas = ctx.canvas;
-//     const dia = canvas.width;
-//     const rad = dia / 2;
-//     const tot = coloredPrizes.length;
-//     const arc = TAU / tot;
-
-//     const render = () => {
-//       ctx.clearRect(0, 0, dia, dia);
-//       coloredPrizes.forEach((sec, i) => drawSector(ctx, sec, i, arc, rad));
-//     };
-
-//     render();
-
-//     let frameId;
-//     const animate = () => {
-//       if (angVel.current > 0) {
-//         angVel.current *= friction;
-//         if (angVel.current < 0.002) angVel.current = 0;
-
-//         ang.current = (ang.current + angVel.current) % TAU;
-//         canvas.style.transform = `rotate(${ang.current - PI / 2}rad)`;
-
-//         // Stop event
-//         if (angVel.current === 0) {
-//           const idx = getIndex(ang.current, tot);
-//           onFinish && onFinish(coloredPrizes[idx], idx);
-//         }
-//       }
-//       frameId = requestAnimationFrame(animate);
-//     };
-
-//     animate();
-//     return () => cancelAnimationFrame(frameId);
-//   }, [prizes]);
-
-//   // TRIGGER SPIN
-//   useEffect(() => {
-//     if (!spinTrigger) return;
-//     angVel.current = Math.random() * 0.35 + 0.25;
-//   }, [spinTrigger]);
-
-//   return (
-//     <div className="flex flex-col items-center justify-center relative">
-
-//       {/* POINTER / JARUM */}
-//       <div
-//         className="absolute top-[-10px] z-20 w-0 h-0"
-//         style={{
-//           borderLeft: "10px solid transparent",
-//           borderRight: "10px solid transparent",
-//           borderTop: "35px solid yellow",
-//         }}
-//       />
-
-//       {/* SPIN WHEEL CANVAS */}
-//       <div className="relative w-[400px] h-[400px]">
-//         <canvas
-//           ref={canvasRef}
-//           width={400}
-//           height={400}
-//           className="rounded-full shadow-xl will-change-transform"
-//         ></canvas>
-//       </div>
-//     </div>
-//   );
-// }
-
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
@@ -138,7 +12,7 @@ export default function Wheel({ prizes = [], onFinish, spinTrigger, targetIndex 
 
   const [isSpinning, setIsSpinning] = useState(false);
 
-  const friction = 0.985;
+  const friction = 0.990;
   const PI = Math.PI;
   const TAU = 2 * PI;
 
@@ -286,7 +160,7 @@ export default function Wheel({ prizes = [], onFinish, spinTrigger, targetIndex 
 
     const total = prizes.length;
     const targetAngle = computeTargetAngle(targetIndex, total);
-    const extraSpins = 6;
+    const extraSpins = 9;
     const finalAngle = targetAngle + extraSpins * TAU;
 
     const diff = finalAngle - ang.current;
@@ -301,16 +175,16 @@ export default function Wheel({ prizes = [], onFinish, spinTrigger, targetIndex 
         style={{
           borderLeft: "13px solid transparent",
           borderRight: "13px solid transparent",
-          borderTop: "45px solid green",
+          borderTop: "45px solid #7F00FF",
          
         }}
       />
-      <div className="relative  w-[300px] h-[300px] md:w-[500px] md:h-[500px] rounded-full shadow-2xl" style={{ boxShadow: "0 0 0 8px #be123c, 0 10px 30px rgba(0,0,0,0.3)" }}>
+      <div className="relative  w-[340px] h-[340px] md:w-[420px] md:h-[420px] rounded-full " style={{ boxShadow: "0 0 0 12px #7F00FF, 0 10px 30px rgba(0,0,0,0.6)" }}>
         <canvas
           ref={canvasRef}
           width={400}
           height={400}
-          className="rounded-full w-[300px] h-[300px] md:w-[500px] md:h-[500px] mx-auto will-change-transform"
+          className="rounded-full p-1 border-4 border-white w-[340px] h-[340px] md:w-[420px] md:h-[420px] mx-auto will-change-transform"
         ></canvas>
       </div>
     </div>

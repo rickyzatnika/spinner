@@ -98,7 +98,7 @@ const Prizes = () => {
       <button onClick={modalToggle} className="mb-3 bg-pink-600 text-white p-4 rounded-md shadow-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">Tambahkan Hadiah</button>
       <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
         <table class="w-full text-sm text-left rtl:text-right text-body">
-          <thead class="text-sm bg-pink-200 text-body bg-neutral-secondary-medium border-b border-default-medium">
+          <thead class="text-sm bg-purple-200 text-body bg-neutral-secondary-medium border-b border-default-medium">
             <tr>
               <th scope="col" class="px-6 py-3 font-bold">
                 Nama Produk
