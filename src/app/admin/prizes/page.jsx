@@ -95,33 +95,33 @@ const Prizes = () => {
   return (
     <div className='w-full relative'>
       {/* Modal Button */}
-      <button onClick={modalToggle} className="mb-3 bg-pink-600 text-white p-4 rounded-md shadow-lg hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">Tambahkan Hadiah</button>
-      <div class="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
-        <table class="w-full text-sm text-left rtl:text-right text-body">
-          <thead class="text-sm bg-purple-200 text-body bg-neutral-secondary-medium border-b border-default-medium">
+      <button onClick={modalToggle} className="mb-3 bg-pink-400 text-white p-4 rounded-md shadow-lg hover:bg-pink-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-pink-500">Tambahkan Hadiah</button>
+      <div className="relative overflow-x-auto bg-neutral-primary-soft shadow-xs rounded-base border border-default">
+        <table className="w-full text-sm text-left rtl:text-right text-body">
+          <thead className="text-sm bg-purple-200 text-body bg-neutral-secondary-medium border-b border-default-medium">
             <tr>
-              <th scope="col" class="px-6 py-3 font-bold">
+              <th scope="col" className="px-6 py-3 font-bold">
                 Nama Produk
               </th>
-              <th scope="col" class="px-6 py-3 font-bold">
+              <th scope="col" className="px-6 py-3 font-bold">
                 Stok
               </th>
-              <th scope="col" class="px-6 py-3 font-bold">
+              <th scope="col" className="px-6 py-3 font-bold">
                 Action
               </th>
             </tr>
           </thead>
           <tbody>
             {data?.prizes?.map((prize) => (
-              <tr key={prize._id} class="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
-                <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
+              <tr key={prize._id} className="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
+                <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
                   {prize.name}
                 </th>
-                <th scope="row" class="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
                   {prize.weight}
                 </th>
-                <td class="px-6 py-4 text-right flex items-center gap-6">
-                  <Link href={`/admin/prizes/${prize._id}`} class="font-medium text-fg-brand hover:underline">Edit</Link>
+                <td className="px-6 py-4 text-right flex items-center gap-6">
+                  <Link href={`/admin/prizes/${prize._id}`} className="font-medium text-fg-brand hover:underline">Edit</Link>
                   <button className='py-1.5 px-3 bg-red-400 text-white rounded-xl hover:bg-red-600 ' onClick={() => deletePrize(prize._id)}>Delete</button>
                 </td>
               </tr>

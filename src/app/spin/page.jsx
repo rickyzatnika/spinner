@@ -49,53 +49,70 @@ export default function SpinPage() {
   return (
     <div className="w-full md:w-6/12 h-full md:h-screen py-2 px-6 backdrop-blur-md flex flex-col bg-pink-200/10 items-center justify-between md:justify-center gap-6  overflow-hidden">
 
-    <div className="w-full flex flex-col  mt-3 items-center gap-4">
-      <div>
-        <Image
-          src="/goodluck.png"
-          alt="Good luck"
-          width={450}
-          height={450}
-          priority={true}
-          className={`object-cover transition-transform duration-300 ease-out ${isSpinning ? 'animate-wobble' : celebrate ? 'animate-pop' : 'animate-float'}`}
-        />
+      <div className="w-full flex flex-col  mt-3 items-center gap-4">
+        {spinResult?.success ?
+          (
+            spinResult?.success && spinResult.prize === "ZoooooNK" ?
+              (
+                <>
+                  <p className="text-2xl md:text-3xl font-bold">Maaf Anda Kurang Beruntung</p>
+                </>
+
+              ) : (
+                <>
+                  <div className="mt-10 animate-bounce text-white text-center">
+                    <p className="text-2xl md:text-3xl font-bold">Selamat Anda Mendapatkan!</p>
+                    <p className="text-xl md:text-5xl font-extrabold">{spinResult.prize}</p>
+                  </div>
+                </>
+              )
+
+          ) : (
+            <div>
+              <Image
+                src="/goodluck.png"
+                alt="Good luck"
+                width={450}
+                height={450}
+                priority={true}
+                className={`object-cover transition-transform duration-300 ease-out ${isSpinning ? 'animate-wobble' : celebrate ? 'animate-pop' : 'animate-float'}`}
+              />
+            </div>
+
+          )
+        }
+
+        <div className="w-full ">
+          <Wheel
+            prizes={prizes}
+            spinTrigger={spinTrigger}
+            targetIndex={spinIndex} // target untuk wheel berhenti
+
+
+            onFinish={async (prize, index) => {
+              setSpinResult({ success: true, prize: prize.name, index });
+              // stop spinner state and trigger a short header pop animation
+              setIsSpinning(false);
+              setCelebrate(true);
+              setTimeout(() => setCelebrate(false), 900);
+
+              // Kirim hasil ke backend
+              await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spin`, {
+                method: "POST",
+                body: JSON.stringify({
+                  code,
+                  prize: prize.name,
+                  prizeId: prize._id,
+                }),
+              });
+
+
+            }}
+          />
+
+
+        </div>
       </div>
-      <div className="w-full ">
-        <Wheel
-          prizes={prizes}
-          spinTrigger={spinTrigger}
-          targetIndex={spinIndex} // target untuk wheel berhenti
-
-
-          onFinish={async (prize, index) => {
-            setSpinResult({ success: true, prize: prize.name, index });
-            // stop spinner state and trigger a short header pop animation
-            setIsSpinning(false);
-            setCelebrate(true);
-            setTimeout(() => setCelebrate(false), 900);
-
-            // Kirim hasil ke backend
-            await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/spin`, {
-              method: "POST",
-              body: JSON.stringify({
-                code,
-                prize: prize.name,
-                prizeId: prize._id,
-              }),
-            });
-
-
-          }}
-        />
-
-        {spinResult?.success && (
-          <div className="mt-10 animate-bounce text-white text-center">
-            <p className="text-2xl md:text-3xl font-bold">Selamat Anda Mendapatkan!</p>
-            <p className="text-xl md:text-5xl font-extrabold">{spinResult.prize}</p>
-          </div>
-        )}
-      </div>
-     </div>
 
       <div className="w-full ">
 
@@ -111,11 +128,11 @@ export default function SpinPage() {
 
           {!valid?.valid && (
             <button
-            onClick={validateCode}
-            className="w-full bg-pink-600 text-white p-3 rounded-lg font-bold"
-          >
-            Submit
-          </button>
+              onClick={validateCode}
+              className="w-full bg-pink-600 text-white p-3 rounded-lg font-bold"
+            >
+              Submit
+            </button>
           )}
 
           {valid?.valid && !isSpinning && !spinResult && (
@@ -144,9 +161,9 @@ export default function SpinPage() {
               Refresh
             </button>
           )}
-          
 
-          {!valid?.valid && valid?.valid === false &&  (
+
+          {!valid?.valid && valid?.valid === false && (
             <p className="text-white bg-red-800 p-2 text-center mt-4">Kode tidak valid atau sudah digunakan.</p>
           )}
         </div>

@@ -6,11 +6,12 @@ import axios from 'axios';
 import { exportToCSV, exportToPDF } from '@/lib/export';
 import { toast } from 'react-toastify';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 const UserRegistration = () => {
 
   const fetcher = (url) => fetch(url).then((res) => res.json());
-
+  const router = useRouter();
   // Pagination + data fetch
   const [page, setPage] = useState(1);
   const limit = 10;
@@ -126,7 +127,7 @@ const UserRegistration = () => {
     <div className='w-full '>
 
       <div className="flex items-center justify-between mb-3">
-        <h3 className='text-2xl font-semibold'>User Registered</h3>
+        <h3 className='text-2xl font-semibold '>User Registered</h3>
         <div />
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 relative">
@@ -150,11 +151,11 @@ const UserRegistration = () => {
                 </div>
               </div>
             )}
-            <button onClick={() => exportUsingSelected('csv')} className={`py-2 px-3 rounded-md bg-green-400/90 hover:bg-white text-sm`}>Export CSV</button>
-            <button onClick={async () => await exportUsingSelected('pdf')} className={`py-2 px-3 bg-red-400/90 rounded-md border border-gray-200 text-sm`}>Export PDF</button>
+            <button onClick={() => exportUsingSelected('csv')} className={`py-2 px-3 text-white rounded-md bg-green-400/90 hover:bg-green-500/90 text-sm`}>Export CSV</button>
+            <button onClick={async () => await exportUsingSelected('pdf')} className={`py-2 px-3 text-white bg-red-400/90 hover:bg-red-500/90 rounded-md border border-gray-200 text-sm`}>Export PDF</button>
           </div>
           <div className="text-sm text-muted">{selected.size} terpilih</div>
-          <button onClick={openDeleteMultiple} className={`py-2 px-3 rounded-xl text-white ${selected.size ? 'bg-red-500 hover:bg-red-600' : 'bg-red-300 cursor-not-allowed'}`} disabled={!selected.size}>Delete Selected</button>
+          <button onClick={openDeleteMultiple} className={`py-2 px-3 rounded-xl text-white ${selected.size ? 'bg-red-400/90 hover:bg-red-500/90' : 'bg-red-300 cursor-not-allowed'}`} disabled={!selected.size}>Delete Selected</button>
         </div>
       </div>
 
@@ -181,7 +182,7 @@ const UserRegistration = () => {
               <th scope="col" className="px-6 py-3 font-bold">Kode Spin</th>
               <th scope="col" className="px-6 py-3 font-bold">Valid</th>
               <th scope="col" className="px-6 py-3 font-bold">Hadiah</th>
-              <th scope="col" className="px-6 py-3 font-bold">Action</th>
+              <th scope="col" className="px-6 py-3 font-bold text-center">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -216,9 +217,8 @@ const UserRegistration = () => {
                   <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap text-center">
                     {user.spinResult ? user.spinResult : "-"}
                   </th>
-                  <td className="px-6 py-4 text-right flex items-center gap-6">
-                    <Link href={`/admin/registrasions/${user._id}`} className="font-medium text-fg-brand hover:underline">Edit</Link>
-                    <button className='py-1.5 px-3 bg-red-500 text-white rounded-xl hover:bg-red-600 ' onClick={() => openDeleteSingle(user._id)}>Delete</button>
+                  <td onClick={() => router.push(`/admin/registrasions/${user._id}`)} className="px-6 py-4 cursor-pointer text-center group  bg-green-400/80 hover:bg-green-500/80 ">
+                    <Link href={`/admin/registrasions/${user._id}`} className="font-medium text-black/60 group-hover:text-black/80 text-md text-center group-hover:underline">Edit</Link> 
                   </td>
                 </tr>
               ))
@@ -233,7 +233,7 @@ const UserRegistration = () => {
       {/* Pagination controls */}
       {data?.totalCount > limit && (
         <div className="flex items-center justify-between mt-4">
-          <div className="text-sm text-muted">Menampilkan halaman {data?.page} dari {data?.totalPages} — total {data?.totalCount} log</div>
+          <div className="text-sm text-muted">Menampilkan halaman {data?.page} dari {data?.totalPages} — total {data?.totalCount} User</div>
           <div className="flex items-center gap-2">
             <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className={`px-3 py-1 rounded-md ${page <= 1 ? 'bg-gray-200 text-muted' : 'bg-white/90 hover:bg-white'}`}>Prev</button>
             {/* simple numeric pages */}
