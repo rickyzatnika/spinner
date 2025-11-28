@@ -28,7 +28,16 @@ export async function POST(req) {
   try {
     await connectDB();
 
-    const { name, email, phone, storeName } = await req.json();
+    const { name, email, phone, storeName, deviceId } = await req.json();
+
+    // If a deviceId is provided, check to prevent duplicate registrations from same device
+    if (deviceId) {
+      const already = await Registration.findOne({ deviceId });
+      if (already) {
+        // Return existing code but mark it's an already-registered device
+        return Response.json({ success: true, code: already.code, alreadyRegistered: true });
+      }
+    }
 
     // Generate unique 4 digit code
     let code;
@@ -46,6 +55,7 @@ export async function POST(req) {
       email,
       phone,
       storeName,
+      deviceId,
       code,
     });
 
