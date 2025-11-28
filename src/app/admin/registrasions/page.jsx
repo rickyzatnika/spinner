@@ -59,11 +59,11 @@ const UserRegistration = () => {
 
   const [columnsOpen, setColumnsOpen] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState(() => {
-    try { const raw = localStorage.getItem('export_columns_registrations'); return raw ? JSON.parse(raw) : availableColumns.map(c => c.key);} catch(e){ return availableColumns.map(c=>c.key); }
+    try { const raw = localStorage.getItem('export_columns_registrations'); return raw ? JSON.parse(raw) : availableColumns.map(c => c.key); } catch (e) { return availableColumns.map(c => c.key); }
   });
 
   useEffect(() => {
-    try { localStorage.setItem('export_columns_registrations', JSON.stringify(selectedColumns)); } catch(e){}
+    try { localStorage.setItem('export_columns_registrations', JSON.stringify(selectedColumns)); } catch (e) { }
   }, [selectedColumns]);
 
   const toggleColumn = (key) => {
@@ -126,10 +126,11 @@ const UserRegistration = () => {
     <div className='w-full '>
 
       <div className="flex items-center justify-between mb-3">
+        <h3 className='text-2xl font-semibold'>User Registered</h3>
         <div />
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2 relative">
-            <button onClick={() => setColumnsOpen(v => !v)} className="px-3 py-1 rounded-md border border-gray-200 text-sm">Columns</button>
+            <button onClick={() => setColumnsOpen(v => !v)} className="px-4 py-2 rounded-md border bg-purple-200 border-gray-200 text-sm">Columns</button>
             {columnsOpen && (
               <div className="absolute top-9 left-0 bg-white rounded-md shadow-lg p-3 z-30 w-[260px]">
                 <div className="flex items-center justify-between mb-2">
@@ -149,8 +150,8 @@ const UserRegistration = () => {
                 </div>
               </div>
             )}
-            <button onClick={() => exportUsingSelected('csv')} className={`py-2 px-3 rounded-md bg-white/90 hover:bg-white text-sm`}>Export CSV</button>
-            <button onClick={async () => await exportUsingSelected('pdf')} className={`py-2 px-3 rounded-md border border-gray-200 text-sm`}>Export PDF</button>
+            <button onClick={() => exportUsingSelected('csv')} className={`py-2 px-3 rounded-md bg-green-400/90 hover:bg-white text-sm`}>Export CSV</button>
+            <button onClick={async () => await exportUsingSelected('pdf')} className={`py-2 px-3 bg-red-400/90 rounded-md border border-gray-200 text-sm`}>Export PDF</button>
           </div>
           <div className="text-sm text-muted">{selected.size} terpilih</div>
           <button onClick={openDeleteMultiple} className={`py-2 px-3 rounded-xl text-white ${selected.size ? 'bg-red-500 hover:bg-red-600' : 'bg-red-300 cursor-not-allowed'}`} disabled={!selected.size}>Delete Selected</button>
@@ -187,8 +188,8 @@ const UserRegistration = () => {
             {data?.users?.length > 0 ? (
               data.users.map((user, idx) => (
                 <tr key={user._id} className="bg-neutral-primary-soft border-b border-default hover:bg-neutral-secondary-medium">
-                    <td className="px-6 py-4">
-                      <input aria-label={`select user ${user._id}`} className="h-4 w-4 rounded border-gray-300" type="checkbox" checked={selected.has(user._id)} onChange={(e) => {
+                  <td className="px-6 py-4">
+                    <input aria-label={`select user ${user._id}`} className="h-4 w-4 rounded border-gray-300" type="checkbox" checked={selected.has(user._id)} onChange={(e) => {
                       const next = new Set(selected);
                       if (e.target.checked) next.add(user._id); else next.delete(user._id);
                       setSelected(next);
@@ -200,26 +201,26 @@ const UserRegistration = () => {
                   <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
                     {user.name}
                   </th>
-                <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                  {user.email}
-                </th>
-                <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                  {user.phone}
-                </th>
-                <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                  {user.code}
-                </th>
-                <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
-                  {user.isUsed ? "Sudah" : "Belum"}
-                </th>
-                <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap text-center">
-                  {user.spinResult ? user.spinResult : "-"}
-                </th>
-                <td className="px-6 py-4 text-right flex items-center gap-6">
-                  <Link href={`/admin/registrasions/${user._id}`} className="font-medium text-fg-brand hover:underline">Edit</Link>
-                  <button className='py-1.5 px-3 bg-red-500 text-white rounded-xl hover:bg-red-600 ' onClick={() => openDeleteSingle(user._id)}>Delete</button>
-                </td>
-              </tr>
+                  <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                    {user.email}
+                  </th>
+                  <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                    {user.phone}
+                  </th>
+                  <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                    {user.code}
+                  </th>
+                  <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap">
+                    {user.isUsed ? "Sudah" : "Belum"}
+                  </th>
+                  <th scope="row" className="px-6 py-4 font-medium text-heading whitespace-nowrap text-center">
+                    {user.spinResult ? user.spinResult : "-"}
+                  </th>
+                  <td className="px-6 py-4 text-right flex items-center gap-6">
+                    <Link href={`/admin/registrasions/${user._id}`} className="font-medium text-fg-brand hover:underline">Edit</Link>
+                    <button className='py-1.5 px-3 bg-red-500 text-white rounded-xl hover:bg-red-600 ' onClick={() => openDeleteSingle(user._id)}>Delete</button>
+                  </td>
+                </tr>
               ))
             ) : (
               <tr>
@@ -229,21 +230,20 @@ const UserRegistration = () => {
           </tbody>
         </table>
       </div>
-      <div className="flex items-center justify-between mt-3">
-        <div className="text-sm text-muted">{selected.size} terpilih</div>
-        <div className="flex items-center gap-2">
-          {data?.totalCount > limit && (
-            <>
-              <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className={`px-3 py-1 rounded-md ${page <=1 ? 'bg-gray-200 text-muted' : 'bg-white/90 hover:bg-white'}`}>Prev</button>
-              {Array.from({ length: data.totalPages }).map((_, idx) => (
-                <button key={idx} onClick={() => setPage(idx+1)} className={`px-3 py-1 rounded-md ${page === idx+1 ? 'bg-purple-500 text-white' : 'bg-white/90 hover:bg-white'}`}>{idx+1}</button>
-              ))}
-              <button onClick={() => setPage(Math.min(data.totalPages, page + 1))} disabled={page >= data.totalPages} className={`px-3 py-1 rounded-md ${page >= data.totalPages ? 'bg-gray-200 text-muted' : 'bg-white/90 hover:bg-white'}`}>Next</button>
-            </>
-          )}
-          
+      {/* Pagination controls */}
+      {data?.totalCount > limit && (
+        <div className="flex items-center justify-between mt-4">
+          <div className="text-sm text-muted">Menampilkan halaman {data?.page} dari {data?.totalPages} — total {data?.totalCount} log</div>
+          <div className="flex items-center gap-2">
+            <button onClick={() => setPage(Math.max(1, page - 1))} disabled={page <= 1} className={`px-3 py-1 rounded-md ${page <= 1 ? 'bg-gray-200 text-muted' : 'bg-white/90 hover:bg-white'}`}>Prev</button>
+            {/* simple numeric pages */}
+            {Array.from({ length: data.totalPages }).map((_, idx) => (
+              <button key={idx} onClick={() => setPage(idx + 1)} className={`px-3 py-1 rounded-md ${page === idx + 1 ? 'bg-purple-500 text-white' : 'bg-white/90 hover:bg-white'}`}>{idx + 1}</button>
+            ))}
+            <button onClick={() => setPage(Math.min(data.totalPages, page + 1))} disabled={page >= data.totalPages} className={`px-3 py-1 rounded-md ${page >= data.totalPages ? 'bg-gray-200 text-muted' : 'bg-white/90 hover:bg-white'}`}>Next</button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Confirm modal */}
       {confirmModal.open && (
