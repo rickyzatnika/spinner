@@ -12,6 +12,7 @@ export default function RegisterPage() {
   const [code, setCode] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
   const [alreadyRegisteredMsg, setAlreadyRegisteredMsg] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Use an existing device id if available
@@ -38,15 +39,17 @@ export default function RegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (loading) return; // avoid double submit
+    setLoading(true);
+    try {
+      const payload = { ...form, deviceId };
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/register`, {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
+      const data = await res.json();
 
-    const payload = { ...form, deviceId };
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/register`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
-    const data = await res.json();
-
-    if (data.success) {
+      if (data.success) {
       setCode(data.code);
       // store code locally so same device won't register again
       try { localStorage.setItem('spinner_registration_code', data.code); } catch (e) {}
@@ -55,13 +58,19 @@ export default function RegisterPage() {
         setAlreadyRegisteredMsg('Perangkat ini sudah pernah terdaftar. Kode yang ada sebelumnya ditampilkan di bawah.');
       }
 
-      // Reset form
+        // Reset form
       setForm({
         name: "",
         email: "",
         phone: "",
         storeName: "",
       });
+      }
+    } catch (err) {
+      console.error('Register error', err);
+      // Optional: set a user-visible error state later
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,15 +105,28 @@ export default function RegisterPage() {
                 onChange={(e) =>
                   setForm({ ...form, [field]: e.target.value })
                 }
+                disabled={loading}
                 required
               />
             ))}
 
             <button
               type="submit"
-              className="w-full bg-pink-600 hover:bg-pink-700 text-white font-bold p-3 rounded-xl mt-3"
+              className={`w-full mt-3 rounded-xl p-3 font-bold text-white flex items-center justify-center ${loading ? 'bg-pink-400 cursor-not-allowed' : 'bg-pink-600 hover:bg-pink-700'}`}
+              disabled={loading}
+              aria-busy={loading}
             >
-              Submit
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 mr-3 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                  </svg>
+                  Mengirim...
+                </>
+              ) : (
+                'Submit'
+              )}
             </button>
             <p className="text-xs text-white/70 mt-2">Perhatian: setiap perangkat hanya dapat mendaftar 1x. Jika perangkat sudah memiliki kode, form akan menyembunyikan dan menampilkan kode tersebut.</p>
           </form>
